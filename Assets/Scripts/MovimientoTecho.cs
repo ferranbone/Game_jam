@@ -36,12 +36,25 @@ public class MovimientoTecho : MonoBehaviour
 
     private void Jump()
     {
-        // Comprobar si el personaje está en el suelo
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
-
-        if (/*isGrounded && */Input.GetButtonDown("Jump1"))
+        if (isGrounded && Input.GetButtonDown("Jump1"))
         {
             rb.velocity = new Vector2(rb.velocity.x, -jumpForce); // Aplicar la fuerza del salto
+        }
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Si colisionamos con un objeto con el tag "Invisible", comienza el fade in
+        if (collision.gameObject.CompareTag("techo"))
+        {
+            isGrounded = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("techo"))
+        {
+            isGrounded = false;
         }
     }
 }

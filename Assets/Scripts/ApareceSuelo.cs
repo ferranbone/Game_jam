@@ -1,51 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class ApareceSuelo : MonoBehaviour
 {
-    private Renderer objectRenderer; // El Renderer del objeto
-    private Color objectColor; // El color del material
-    public float fadeSpeed = 0.5f; // Velocidad de cambio de alfa
-    private bool isColliding = false; // Si está en colisión con el objeto "Invisible"
+    public Tilemap tilemap;  // El tilemap donde están los tiles
+    public Color colorTransparente = new Color(1f, 1f, 1f, 0f); // Transparente por defecto
+    public Color colorVisible = new Color(1f, 1f, 1f, 1f);  // Opaco cuando colisiona con el jugador
 
-    void Start()
+    private void Start()
     {
-        // Obtén el Renderer del objeto
-        objectRenderer = GetComponent<Renderer>();
-        if (objectRenderer != null)
+        // Cambiar la transparencia a todos los tiles al inicio
+        CambiarTransparencia(colorTransparente);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
         {
-            // Obtén el color actual del material
-            objectColor = objectRenderer.material.color;
+            // Si el jugador entra en contacto, hacemos los tiles visibles
+            CambiarTransparencia(colorVisible);
         }
     }
 
-    void Update()
+    private void OnTriggerExit2D(Collider2D other)
     {
-        // Si estamos colisionando con un objeto "Invisible", incrementa la opacidad
-        if (isColliding && objectColor.a < 1f)
+        if (other.CompareTag("Player"))
         {
-            // Aumentar el valor alfa del color
-            objectColor.a += fadeSpeed * Time.deltaTime;
-            // Actualiza el color del material
-            objectRenderer.material.color = objectColor;
+            // Si el jugador sale del área de colisión, hacer los tiles transparentes de nuevo
+            CambiarTransparencia(colorTransparente);
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    // Función para cambiar la transparencia de todos los tiles
+    private void CambiarTransparencia(Color nuevoColor)
     {
-        // Si colisionamos con un objeto con el tag "Invisible", comienza el fade in
-        if (collision.gameObject.CompareTag("player"))
-        {
-            isColliding = true;
-        }
-    }
+        BoundsInt bounds = tilemap.cellBounds;
+        TileBase[] allTiles = tilemap.GetTilesBlock(bounds);
 
-    void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("player"))
+        foreach (var tile in allTiles)
         {
-            isColliding = false;
+            if (tile != null)
+            {
+                // Cambiar el color de cada tile en el Tilemap
+                // Asumimos que el tile tiene un material con transparencia
+                Material mat = tilemap.GetComponent<SpriteRenderer>().material;
+
+                if (mat != null)
+                {
+                    mat.color = nuevoColor;
+                }
+            }
         }
     }
 }

@@ -35,24 +35,23 @@ public class Movimiento : MonoBehaviour
 
     private void Jump()
     {
-        
-        // Si está en el suelo y presionamos la tecla de salto (espacio)
-        if (/*isGrounded && */Input.GetButtonDown("Jump"))
+        if (isGrounded && Input.GetButtonDown("Jump"))
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce); // Aplicar la fuerza del salto
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         // Si colisionamos con un objeto con el tag "Invisible", comienza el fade in
         if (collision.gameObject.CompareTag("suelo"))
         {
             isGrounded = true;
         }
+        
     }
 
-    void OnCollisionExit(Collision collision)
+    void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("suelo"))
         {
