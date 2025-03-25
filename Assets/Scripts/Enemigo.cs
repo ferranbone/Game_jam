@@ -4,29 +4,27 @@ using UnityEngine;
 
 public class Enemigo : MonoBehaviour
 {
+    public float distancia = 1.0f;
     public float speed = 2f; // Velocidad de movimiento
-    private int direction = -1; // -1: izquierda, 1: derecha
+    public GameObject gameOver;
+    private Vector3 posicionInicial;
+
+    private void Start()
+    {
+        posicionInicial = transform.position;
+    }
 
     void Update()
     {
-        // Mueve al enemigo en la dirección establecida
-        transform.Translate(Vector2.right * direction * speed * Time.deltaTime);
+        transform.position = posicionInicial+Vector3.left*Mathf.PingPong(Time.time * speed, distancia);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("El jugador ha perdido");
-        }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        // Si choca con un obstáculo, cambia de dirección
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            direction *= -1;
+            Time.timeScale = 0f;
+            gameOver.SetActive(true);
         }
     }
 }
