@@ -5,53 +5,35 @@ using UnityEngine.Tilemaps;
 
 public class ApareceSuelo : MonoBehaviour
 {
-    public Tilemap tilemap;  // El tilemap donde están los tiles
-    public Color colorTransparente = new Color(1f, 1f, 1f, 0f); // Transparente por defecto
-    public Color colorVisible = new Color(1f, 1f, 1f, 1f);  // Opaco cuando colisiona con el jugador
+    private Tilemap tilemap;
+    private Color originalColor;
 
-    private void Start()
+    void Start()
     {
-        // Cambiar la transparencia a todos los tiles al inicio
-        CambiarTransparencia(colorTransparente);
+        tilemap = GetComponent<Tilemap>();
+        originalColor = tilemap.color; // Guardamos el color original
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
-            // Si el jugador entra en contacto, hacemos los tiles visibles
-            CambiarTransparencia(colorVisible);
+            SetTilemapAlpha(1f); // Hace el Tilemap totalmente visible
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
-            // Si el jugador sale del área de colisión, hacer los tiles transparentes de nuevo
-            CambiarTransparencia(colorTransparente);
+            SetTilemapAlpha(originalColor.a); // Restaura el alfa original
         }
     }
 
-    // Función para cambiar la transparencia de todos los tiles
-    private void CambiarTransparencia(Color nuevoColor)
+    void SetTilemapAlpha(float alpha)
     {
-        BoundsInt bounds = tilemap.cellBounds;
-        TileBase[] allTiles = tilemap.GetTilesBlock(bounds);
-
-        foreach (var tile in allTiles)
-        {
-            if (tile != null)
-            {
-                // Cambiar el color de cada tile en el Tilemap
-                // Asumimos que el tile tiene un material con transparencia
-                Material mat = tilemap.GetComponent<SpriteRenderer>().material;
-
-                if (mat != null)
-                {
-                    mat.color = nuevoColor;
-                }
-            }
-        }
+        Color newColor = tilemap.color;
+        newColor.a = alpha;
+        tilemap.color = newColor;
     }
 }
