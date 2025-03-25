@@ -15,13 +15,15 @@ public class MovimientoTecho : MonoBehaviour
     public AudioClip audioClip;  // El clip de audio que deseas reproducir
     private AudioSource audioSource;
 
+    public float groundCheckRadius = 0.2f;
+
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = -1;
         audioSource = GetComponent<AudioSource>();
+        rb.gravityScale = -1;
         if (audioClip != null)
         {
             audioSource.clip = audioClip;
@@ -31,6 +33,7 @@ public class MovimientoTecho : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckGround();
         Move();
         Jump();
     }

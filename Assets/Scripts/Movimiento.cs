@@ -15,6 +15,8 @@ public class Movimiento : MonoBehaviour
     public AudioClip audioClip;  // El clip de audio que deseas reproducir
     private AudioSource audioSource;
 
+    public float groundCheckRadius = 0.2f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,7 @@ public class Movimiento : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckGround();
         Move();
         Jump();
     }
@@ -40,11 +43,14 @@ public class Movimiento : MonoBehaviour
 
         // Movimiento del personaje en el eje horizontal
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-        if (isGrounded && Input.GetKey(KeyCode.D))
+        if (isGrounded && moveInput > 0)
         {
             animator.SetBool("mover", true);
+            animator.SetBool("mover2", false);
         }
-        else if (isGrounded && Input.GetKey(KeyCode.A)){
+        else if (isGrounded && moveInput < 0)
+        {
+            animator.SetBool("mover", false);
             animator.SetBool("mover2", true);
         }
         else
@@ -68,21 +74,18 @@ public class Movimiento : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    private void CheckGround()
     {
-        // Si colisionamos con un objeto con el tag "Invisible", comienza el fade in
-        if (collision.gameObject.CompareTag("suelo") || collision.gameObject.CompareTag("invisible"))
-        {
-            isGrounded = true;
-        }
-        
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
-    void OnCollisionExit2D(Collision2D collision)
+    // Mostrar el radio del GroundCheck en la escena para ajustar mejor su tamaño
+    private void OnDrawGizmos()
     {
-        if (collision.gameObject.CompareTag("suelo") || collision.gameObject.CompareTag("invisible"))
+        if (groundCheck != null)
         {
-            isGrounded = false;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
     }
 }
