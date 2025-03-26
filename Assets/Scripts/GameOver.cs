@@ -7,19 +7,14 @@ public class GameOver : MonoBehaviour
 {
     public GameObject gameOver;
     private Rigidbody2D rb;
-    public AudioClip audioClip;  // El clip de audio que deseas reproducir
-    private AudioSource audioSource;
+   
 
     // Start is called before the first frame update
     void Start()
     {
         gameOver.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
-        audioSource = GetComponent<AudioSource>();
-        if (audioClip != null)
-        {
-            audioSource.clip = audioClip;
-        }
+       
 
     }
 
@@ -28,11 +23,7 @@ public class GameOver : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("perder"))
         {
-            if (!audioSource.isPlaying)
-            {
-                audioSource.Play();  // Reproducir el audio
-                Debug.Log("audio");
-            }
+            
             Time.timeScale = 0f;
             gameOver.SetActive(true);
         }

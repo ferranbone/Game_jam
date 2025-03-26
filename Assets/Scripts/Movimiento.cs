@@ -12,8 +12,6 @@ public class Movimiento : MonoBehaviour
     private Rigidbody2D rb; // Referencia al Rigidbody2D
     private bool isGrounded;
     private Animator animator;
-    public AudioClip audioClip;  // El clip de audio que deseas reproducir
-    private AudioSource audioSource;
 
     public float groundCheckRadius = 0.2f;
 
@@ -22,11 +20,7 @@ public class Movimiento : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        audioSource = GetComponent<AudioSource>();
-        if (audioClip != null)
-        {
-            audioSource.clip = audioClip;
-        }
+        
     }
 
     // Update is called once per frame
@@ -66,11 +60,7 @@ public class Movimiento : MonoBehaviour
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce); // Aplicar la fuerza del salto
-            if (!audioSource.isPlaying)
-            {
-                audioSource.Play();  // Reproducir el audio
-                Debug.Log("audio");
-            }
+            
         }
     }
 

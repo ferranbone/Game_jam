@@ -12,28 +12,19 @@ public class MovimientoTecho : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded;
     private Animator animator;
-    public AudioClip audioClip;  // El clip de audio que deseas reproducir
-    private AudioSource audioSource;
-
-    public float groundCheckRadius = 0.2f;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        audioSource = GetComponent<AudioSource>();
         rb.gravityScale = -1;
-        if (audioClip != null)
-        {
-            audioSource.clip = audioClip;
-        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckGround();
         Move();
         Jump();
     }
@@ -64,11 +55,7 @@ public class MovimientoTecho : MonoBehaviour
         if (isGrounded && Input.GetButtonDown("Jump1"))
         {
             rb.velocity = new Vector2(rb.velocity.x, -jumpForce); // Aplicar la fuerza del salto
-            if (!audioSource.isPlaying)
-            {
-                audioSource.Play();  // Reproducir el audio
-                Debug.Log("audio");
-            }
+            
         }
     }
     void OnCollisionEnter2D(Collision2D collision)
